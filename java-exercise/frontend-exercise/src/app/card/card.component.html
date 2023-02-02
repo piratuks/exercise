@@ -1,0 +1,11 @@
+<mat-card class="mat-elevation-z6">
+    <mat-card-header *ngIf="headerText">
+        <mat-card-title>
+            <div>
+                {{ headerText }}
+            </div>
+        </mat-card-title>
+    </mat-card-header>
+
+    <ng-content select="[body]"></ng-content>
+</mat-card>

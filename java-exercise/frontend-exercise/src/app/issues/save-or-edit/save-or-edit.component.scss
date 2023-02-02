@@ -1,0 +1,12 @@
+.actionBlock {
+    margin: auto;
+}
+
+.save-or-edit .mat-form-field {
+    width: 100%;
+}
+
+::ng-deep .save-or-edit .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}

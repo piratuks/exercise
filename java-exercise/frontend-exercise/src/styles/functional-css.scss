@@ -1,0 +1,70 @@
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-drag {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+.pull-right {
+    float: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.vertical-align-bottom {
+    vertical-align: bottom;
+}
+
+.vertical-align-middle {
+    vertical-align: middle;
+}
+
+.vertical-align-top {
+    vertical-align: top;
+}
+
+.vertical-align-super {
+    vertical-align: super;
+}
+
+.right-aligned {
+    text-align: right;
+}
+
+.center-aligned {
+    text-align: center;
+}
+
+.md-button.md-small {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    min-height: 20px;
+    vertical-align: middle;
+    font-size: 10px;
+    padding: 0 0;
+    margin: 0;
+}
+
+.white-spaces-break {
+    white-space: break-spaces;
+}

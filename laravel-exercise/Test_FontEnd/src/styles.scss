@@ -1,0 +1,32 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~ngx-tabset/ngx-tabset";
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~open-iconic/font/css/open-iconic-bootstrap.css';
+
+ngx-spinner{
+
+    p{
+        color:white;
+    }
+}
+
+body{
+    background-color:  #f3f4f4;
+}
+
+.nav-tabset{
+    margin: 0 auto;
+    margin-top: 20px;
+    width: 1000px;
+    background-color: white;
+}
+
+.tabs-container{
+    width: 1000px;
+    margin: 0 auto;
+    padding-top: 10px;
+    background-color: white;
+    .pane{
+        padding: 20px;
+    }
+}

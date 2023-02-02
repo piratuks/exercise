@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>
+    <span *ngIf="developer.developerId">Update Developer</span>
+    <span *ngIf="!developer.developerId">Add a New Developer</span>
+</h1>
+<div mat-dialog-content class="save-or-edit">
+    <p>
+        <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="developer.name" required />
+        </mat-form-field>
+    </p>
+</div>
+<div mat-dialog-actions>
+    <div class="actionBlock">
+        <button mat-button (click)="onCancelClick()">Cancel</button>
+        <button
+            mat-raised-button
+            color="accent"
+            (click)="onCreateClick()"
+            [disabled]="(!developer.developerId && developer.name === '') || (developer.developerId !== null && developer.name === '')"
+        >
+            <span *ngIf="developer.developerId">Update</span>
+            <span *ngIf="!developer.developerId">Create</span>
+        </button>
+    </div>
+</div>

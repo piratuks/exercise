@@ -1,0 +1,85 @@
+<h1 mat-dialog-title>
+    <span *ngIf="issue && issue.issueId">Update Issue</span>
+    <span *ngIf="issue && !issue.issueId">Add a New Issue</span>
+</h1>
+<div mat-dialog-content class="save-or-edit">
+    <p>
+        <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <mat-select required [(ngModel)]="selectedType" (selectionChange)="onSelectionChangedAction()">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let type of types" [value]="type.type">{{ type.type }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput [(ngModel)]="issue.title" required />
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="issue.description" required></textarea>
+        </mat-form-field>
+    </p>
+    <!-- <p>
+        <mat-form-field appearance="fill">
+            <mat-label>Assigned To</mat-label>
+            <mat-select [(ngModel)]="selectedDev">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let dev of developers" [value]="dev.developerId">{{ dev.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </p> -->
+    <p>
+        <mat-form-field appearance="fill">
+            <mat-label>Status</mat-label>
+            <mat-select required [(ngModel)]="selectedStatus">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let status of statuses" [value]="status.status">{{ status.status }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </p>
+    <p *ngIf="selectedType === 'Bug'">
+        <mat-form-field appearance="fill">
+            <mat-label>Priority</mat-label>
+            <mat-select required [(ngModel)]="selectedPriority">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let priority of priorities" [value]="priority.priority">{{ priority.priority }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </p>
+    <p *ngIf="selectedType === 'Story'">
+        <mat-form-field appearance="fill">
+            <mat-label>Estimated Points</mat-label>
+            <input matInput [(ngModel)]="issue.estimatedPoint" type="number" required />
+        </mat-form-field>
+    </p>
+</div>
+<div mat-dialog-actions>
+    <div class="actionBlock">
+        <button mat-button (click)="onCancelClick()">Cancel</button>
+        <button
+            mat-raised-button
+            color="accent"
+            (click)="onCreateClick()"
+            [disabled]="
+                !selectedType ||
+                selectedType === '' ||
+                issue.title === null ||
+                issue.title === '' ||
+                issue.description === null ||
+                issue.description === '' ||
+                !selectedStatus ||
+                selectedStatus === '' ||
+                (selectedType === 'Bug' && (!selectedPriority || selectedPriority === '')) ||
+                (selectedType === 'Story' && !issue.estimatedPoint)
+            "
+        >
+            <span *ngIf="issue && issue.issueId">Update</span>
+            <span *ngIf="issue && !issue.issueId">Create</span>
+        </button>
+    </div>
+</div>

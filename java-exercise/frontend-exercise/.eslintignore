@@ -1,0 +1,11 @@
+.vscode
+dist
+e2e
+node_modules
+src/main.ts
+*.json
+*.css
+*.scss
+*.sass
+proxy.conf.js
+src/assets

@@ -1,0 +1,136 @@
+<div class="block">
+    <div class="row p20">
+        <div class="col-6">
+            <div class="data_lbl">From: </div>
+            <dl-date-time-picker
+            startView="year"
+            maxView="year"
+            minView="day"
+            [(ngModel)]="from_date"
+            >
+            </dl-date-time-picker>
+        </div>
+        <div class="col-6">
+            <div class="data_lbl">To: </div>
+            <dl-date-time-picker
+            startView="year"
+            maxView="year"
+            minView="day"
+            [(ngModel)]="to_date"
+            >
+            </dl-date-time-picker>
+        </div>
+    </div>
+
+
+
+        <button (click)="refreshData()">Refresh Data</button>
+    <ngx-tabset>
+        <ngx-tab tabTitle="Employees">
+            <form class="form-inline waves-light" mdbWavesEffect>
+                <div class="md-form mt-0">
+                    <input class="form-control mr-sm-2" type="text" name="ngModel1" [(ngModel)]="search_value1" placeholder="Search" >
+                </div>
+            </form>
+            <table class="table">
+                <tr class="header">
+                    <td >Month</td>
+                    <td></td>
+                </tr>
+                <tr class="content" *ngFor="let item1 of months" [hidden] = "!data.employees_data.hasOwnProperty(item1)">
+                    <td style="font-weight: bold;">
+                        {{item1}}
+                    </td>
+                    <td>
+                        <table class="table2">
+                            <tr class="header">
+                                <td >First Name</td>
+                                <td >Last Name</td>
+                                <td >Email</td>
+                                <td >Address</td>
+                                <td >Working Hours</td>
+                            </tr>
+                            <tr class="content" *ngFor="let item2 of data.employees_data[item1]" [hidden] = "search_value1 !==null && item2.fname.toLowerCase().indexOf(search_value1?.toLowerCase())<0" >
+                                <td>
+                                    {{item2.fname}}
+                                </td>
+                                <td>
+                                    {{item2.lname}}
+                                </td>
+                                <td>
+                                    {{item2.email}}
+                                </td>       
+                                <td>
+                                    {{item2.address}}
+                                </td>                                                    
+                                <td>
+                                    {{item2.working_hours_total}}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </ngx-tab>
+        <ngx-tab tabTitle="Companies">
+                <form class="form-inline waves-light" mdbWavesEffect>
+                    <div class="md-form mt-0">
+                        <input class="form-control mr-sm-2" type="text" name="ngModel2" [(ngModel)]="search_value2" placeholder="Search" >
+                    </div>
+                </form>
+                <table class="table">
+                    <tr class="header">
+                        <td >Month</td>
+                        <td></td>
+                    </tr>
+                    <tr class="content" *ngFor="let item1 of months" [hidden] = "!data.companies_data.hasOwnProperty(item1)">
+                        <td style="font-weight: bold;">
+                            {{item1}}
+                        </td>
+                        <td>
+                            <table class="table2">
+                                <tr class="header">
+                                    <td >Name</td>
+                                    <td >Phone</td>
+                                    <td >Email</td>
+                                    <td >Address</td>
+                                    <td style="cursor: pointer;" (click)="sort(!is_desc);">
+                                        Working Hours 
+                                        <span [hidden] = "!is_desc" class="fa fa-sort-down" ></span>
+                                        <span [hidden] = "is_desc" class="fa fa-sort-up" ></span></td>
+                                </tr>
+                                <tr class="content" *ngFor="let item2 of data.companies_data[item1]"  [hidden] = "search_value2 !==null && item2.name.toLowerCase().indexOf(search_value2?.toLowerCase())<0">
+                                    <td>
+                                        {{item2.name}}
+                                    </td>
+                                    <td>
+                                        {{item2.phone}}
+                                    </td>
+                                    <td>
+                                        {{item2.email}}
+                                    </td>       
+                                    <td>
+                                        {{item2.address}}
+                                    </td>                                                    
+                                    <td>
+                                        {{item2.working_hours_total}}
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+        </ngx-tab>
+    </ngx-tabset>
+</div>
+<ngx-spinner
+bdOpacity = 0.9
+bdColor = "#333"
+size = "medium"
+color = "#fff"
+type = "ball-atom">
+
+<p > Loading... </p>
+
+</ngx-spinner>

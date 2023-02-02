@@ -1,0 +1,33 @@
+.message-box {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.text {
+    // font: 400 16px $font-family;
+    font: 400 16px;
+    width: 500px;
+    white-space: break-spaces;
+    overflow: hidden;
+}
+
+.close-button {
+    margin-left: 36px;
+    margin-right: 24px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.close-button::after {
+    content: '\2715';
+    font-size: 20px;
+}
+
+.header-icon {
+    height: 24px;
+    // width: 100px;
+    margin-left: 8px;
+    margin-right: 8px;
+    align-self: flex-start;
+}

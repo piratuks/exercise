@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+@import './styles/style-reset.scss';
+@import './styles/ui-responsive.scss';
+@import './styles/functional-css.scss';
+@import './styles/ui-utility.scss';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+html {
+    box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    min-width: fit-content;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+
+    background-color: whitesmoke;
+}
+
+.Success-snackbar {
+    color: white;
+    background-color: #00c853;
+}
+.Error-snackbar {
+    color: white;
+    background-color: #db2828;
+}
+.Info-snackbar {
+    color: #000000;
+    background-color: #d1ecf1;
+}
+.Warning-snackbar {
+    color: #000000;
+    background-color: #fbbd08;
+}

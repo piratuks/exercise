@@ -1,0 +1,37 @@
+main {
+    overflow: hidden;
+    position: relative !important;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    min-height: 700px;
+    padding: 20px;
+}
+
+::ng-deep tr.mat-header-row.cdk-header-row {
+    th.mat-header-cell {
+        vertical-align: middle;
+    }
+}
+
+::ng-deep td.mat-cell {
+    vertical-align: middle;
+}
+
+::ng-deep table {
+    width: 100%;
+    .mat-header-cell {
+        font-size: inherit;
+        font-weight: 900;
+    }
+    td.mat-column-actions {
+        width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: end;
+    }
+}
+
+::ng-deep mat-progress-spinner {
+    margin: auto;
+}

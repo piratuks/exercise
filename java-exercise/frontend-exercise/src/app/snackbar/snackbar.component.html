@@ -1,0 +1,19 @@
+<div class="message-box">
+    <ng-container *ngIf="data.infoType === allTypes.success">
+        <mat-icon class="header-icon vertical-align-middle" >check_circle</mat-icon>
+    </ng-container>
+    <ng-container *ngIf="data.infoType === allTypes.info">
+        <mat-icon class="header-icon vertical-align-middle" >info</mat-icon>
+    </ng-container>
+    <ng-container *ngIf="data.infoType === allTypes.error">
+        <mat-icon class="header-icon vertical-align-middle" >error</mat-icon>
+    </ng-container>
+    <ng-container *ngIf="data.infoType === allTypes.warning">
+        <mat-icon class="header-icon vertical-align-middle" >warning</mat-icon>
+    </ng-container>
+
+    <div class="text">{{ data.message }}</div>
+
+    <div class="close-button" (click)="close()"></div>
+    <div></div>
+</div>
