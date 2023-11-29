@@ -40,6 +40,18 @@ export const returnFormatedDynamicFields = (oldObject: FormDynamicField[], allLa
   return labels;
 };
 
+export const reformatDynamicFields = (formatedObject: Record<string, FormDynamicField> | undefined) => {
+  const results: FormDynamicField[] = [];
+
+  if (!formatedObject) return results;
+
+  Object.keys(formatedObject).forEach(obj => {
+    if (formatedObject[obj]) results.push(formatedObject[obj]);
+  });
+
+  return results;
+};
+
 export const formSlice = createSlice({
   name: 'formSlice',
   initialState,
@@ -210,7 +222,8 @@ export const selectSaveUserPayload = createSelector(selectState, state => {
       age: state.age,
       country: state.country,
       gender: state.gender,
-      containsEmails: state.containsEmails
+      containsEmails: state.containsEmails,
+      dynamicFields: reformatDynamicFields(state.dynamicFieldsFormated)
     };
 
   return null;

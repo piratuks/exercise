@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/dist/query/react';
 import { Countries, EmailProviders, Gender } from 'app/constant';
 import { apiBaseQuery } from 'utils/requestUtils';
+import { FormDynamicField } from './formSlice';
 import { StatusCode } from './statusCode';
 
 export interface EnvConfig {
@@ -24,6 +25,7 @@ interface SaveUserPayload {
   country: Countries;
   gender: Gender;
   containsEmails: EmailProviders[];
+  dynamicFields: FormDynamicField[];
 }
 export const formApi = createApi({
   reducerPath: 'formApi',
