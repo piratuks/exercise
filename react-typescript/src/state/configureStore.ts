@@ -4,6 +4,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { configurationApi } from './configurationApi';
 import { configurationSlice } from './configurationSlice';
 import { formApi } from './formApi';
+import { formDynamicFieldSlice } from './formDynamicFieldSlice';
 import { formSlice } from './formSlice';
 import { pageSlice } from './pageSlice';
 import { toastSlice } from './toatsSlice';
@@ -15,7 +16,8 @@ export const store = configureStore({
     [pageSlice.name]: pageSlice.reducer,
     [toastSlice.name]: toastSlice.reducer,
     [formSlice.name]: formSlice.reducer,
-    [formApi.reducerPath]: formApi.reducer
+    [formApi.reducerPath]: formApi.reducer,
+    [formDynamicFieldSlice.name]: formDynamicFieldSlice.reducer
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(configurationApi.middleware, formApi.middleware)
 });

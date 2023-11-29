@@ -13,7 +13,8 @@ const Block = styled.div`
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 999999999;
+  background-color: white;
 `;
 const LogoImg = styled.img`
   cursor: pointer;

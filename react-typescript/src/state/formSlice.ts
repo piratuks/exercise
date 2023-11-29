@@ -1,6 +1,7 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
-import { Countries, EmailProviders, Gender } from 'app/constant';
+import { Countries, EmailProviders, FieldType, Gender } from 'app/constant';
 import { RootState } from './configureStore';
+import { ExtraProps } from './formDynamicFieldSlice';
 
 interface FormState {
   username?: string;
@@ -9,6 +10,15 @@ interface FormState {
   gender?: Gender;
   containsEmails: EmailProviders[];
   dirtyFields: string[];
+  dynamicFields: FormDynamicField[];
+  dynamicFieldsFormated?: Record<string, FormDynamicField>;
+}
+export interface FormDynamicField {
+  fieldType: FieldType;
+  label: string;
+  isRequired: boolean;
+  extra: ExtraProps;
+  error?: string;
 }
 const initialState: FormState = {
   username: undefined,
@@ -16,7 +26,18 @@ const initialState: FormState = {
   country: undefined,
   gender: undefined,
   containsEmails: [],
-  dirtyFields: []
+  dirtyFields: [],
+  dynamicFields: [],
+  dynamicFieldsFormated: undefined
+};
+
+export const returnFormatedDynamicFields = (oldObject: FormDynamicField[], allLabels: string[]) => {
+  const labels: Record<string, FormDynamicField> = {};
+  allLabels.forEach(l => {
+    const object = oldObject.find(item => item.label === l);
+    if (object) labels[l] = object;
+  });
+  return labels;
 };
 
 export const formSlice = createSlice({
@@ -45,6 +66,40 @@ export const formSlice = createSlice({
       state.containsEmails = action.payload;
       addDirtyField(state, 'containsEmails');
     },
+    setDynamicFields: (state, action: PayloadAction<FormDynamicField>) => {
+      if (!state.dynamicFields.some(item => item.label === action.payload.label))
+        state.dynamicFields.push(action.payload);
+
+      state.dynamicFieldsFormated = returnFormatedDynamicFields(
+        state.dynamicFields,
+        state.dynamicFields.map(item => item.label)
+      );
+    },
+    setDynamicFieldsValue: (state, action: PayloadAction<{ label: string; value: string }>) => {
+      if (!state.dynamicFieldsFormated) return;
+
+      const dynamicField = state.dynamicFieldsFormated[action.payload.label];
+
+      if (!dynamicField || !dynamicField.extra) return;
+
+      let dynamicFieldExtra = dynamicField.extra[dynamicField.fieldType];
+
+      if (dynamicFieldExtra === null) {
+        dynamicField.extra[dynamicField.fieldType] = { value: action.payload.value };
+        dynamicFieldExtra = dynamicField.extra[dynamicField.fieldType];
+      } else {
+        dynamicFieldExtra.value = action.payload.value;
+      }
+
+      const key = `dynamicField.${action.payload.label}.${dynamicField.fieldType}`;
+      addDirtyField(state, key);
+
+      if (hasDirtyField(state, key)) {
+        if (dynamicFieldExtra && !dynamicFieldExtra.value && dynamicField.isRequired)
+          dynamicField.error = 'Field is required';
+        else dynamicField.error = undefined;
+      }
+    },
     resetState: state => {
       state.username = undefined;
       state.age = undefined;
@@ -52,6 +107,8 @@ export const formSlice = createSlice({
       state.gender = undefined;
       state.containsEmails = [];
       state.dirtyFields = [];
+      state.dynamicFields = [];
+      state.dynamicFieldsFormated = undefined;
     }
   }
 });
@@ -103,6 +160,10 @@ export const selectGender = createSelector(selectState, state => (state.gender =
 export const selectGenderError = createSelector(selectState, state => getGenderError(state));
 export const selectEmailProvider = createSelector(selectState, state => state.containsEmails);
 export const selectEmailProviderError = createSelector(selectState, state => getContainsEmailsError(state));
+export const selectDynamicFieldsFormated = createSelector(selectState, state => state.dynamicFieldsFormated);
+export const selectDynamicFieldsKeys = createSelector(selectState, state =>
+  state.dynamicFields.map(item => item.label)
+);
 export const selectHasValidData = createSelector(selectState, state => {
   const errorForUser = getUsernameError(state, false);
   if (errorForUser) return false;
@@ -119,6 +180,23 @@ export const selectHasValidData = createSelector(selectState, state => {
   const errorForContainEmails = getContainsEmailsError(state, false);
   if (errorForContainEmails) return false;
 
+  if (state.dynamicFieldsFormated) {
+    let valid = true;
+    for (const key in state.dynamicFieldsFormated) {
+      const ft = state.dynamicFieldsFormated[key].extra[state.dynamicFieldsFormated[key].fieldType];
+      if (
+        state.dynamicFieldsFormated[key].error !== undefined ||
+        ((!ft || !ft.value) && state.dynamicFieldsFormated[key].isRequired)
+      ) {
+        valid = false;
+        break;
+      }
+      if (state.dynamicFieldsFormated[key].error !== undefined) {
+      }
+    }
+    if (!valid) return false;
+  }
+
   return true;
 });
 export const selectSaveUserPayload = createSelector(selectState, state => {
@@ -134,4 +212,13 @@ export const selectSaveUserPayload = createSelector(selectState, state => {
   return null;
 });
 
-export const { setUsername, setAge, setCountry, setGender, setEmailProviders, resetState } = formSlice.actions;
+export const {
+  setUsername,
+  setAge,
+  setCountry,
+  setGender,
+  setEmailProviders,
+  resetState,
+  setDynamicFields,
+  setDynamicFieldsValue
+} = formSlice.actions;

@@ -262,3 +262,9 @@ export enum Gender {
   male = 'Male',
   other = 'Other'
 }
+export enum FieldType {
+  text = 'TextInput',
+  number = 'NumberInput',
+  dropdown = 'Dropdown',
+  radio = 'RadioInput'
+}

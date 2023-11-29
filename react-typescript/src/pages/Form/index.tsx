@@ -13,17 +13,20 @@ import {
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Countries, EmailProviders, Gender } from 'app/constant';
+import { Countries, EmailProviders, FieldType, Gender } from 'app/constant';
 import { FC, useEffect } from 'react';
 import { getErrorMessage } from 'state/apiError';
 import { useAppDispatch, useAppSelector } from 'state/configureStore';
 import { useSaveUserMutation } from 'state/formApi';
 import {
+  FormDynamicField,
   resetState,
   selectAge,
   selectAgeError,
   selectCountry,
   selectCountryError,
+  selectDynamicFieldsFormated,
+  selectDynamicFieldsKeys,
   selectEmailProvider,
   selectEmailProviderError,
   selectGender,
@@ -34,13 +37,16 @@ import {
   selectUsernameError,
   setAge,
   setCountry,
+  setDynamicFieldsValue,
   setEmailProviders,
   setGender,
   setUsername
 } from 'state/formSlice';
 import { disableLoading, enableLoading } from 'state/pageSlice';
 import { ToastType, toastAdd } from 'state/toatsSlice';
+import { getEnumValue } from 'utils/stateUtils';
 import { v4 as uuidv4 } from 'uuid';
+import { AddFormField } from './AddFormField';
 
 export const FormPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -53,6 +59,8 @@ export const FormPage: FC = () => {
   const hasValidData = useAppSelector(selectHasValidData);
   const payload = useAppSelector(selectSaveUserPayload);
   const [updatePost, { error, data, isSuccess, isLoading }] = useSaveUserMutation();
+  const dynamicFieldsFormated = useAppSelector(selectDynamicFieldsFormated);
+  const dynamicFieldsKeys = useAppSelector(selectDynamicFieldsKeys);
 
   useEffect(() => {
     if (isLoading) dispatch(enableLoading());
@@ -87,24 +95,34 @@ export const FormPage: FC = () => {
     if (data && data.operationResult) dispatch(resetState());
   }, [data]);
 
-  const getEnumValue = (passedValue: string | null, data: { [s: number]: string }) => {
-    if (passedValue) {
-      const match = Object.entries(data).find(([key, value]) => value === passedValue);
-      if (match) {
-        const [_key, value] = match;
-        return value;
-      }
-    }
-
-    return undefined;
-  };
-
   const getCountry = (passedValue: string | null) => {
     return getEnumValue(passedValue, Countries) as Countries;
   };
 
   const getGender = (passedValue: string | null) => {
     return getEnumValue(passedValue, Gender) as Gender;
+  };
+
+  const getDynamicFieldValue = (formDynamicField: FormDynamicField) => {
+    return formDynamicField.extra[formDynamicField.fieldType]?.value ?? '';
+  };
+
+  const getDynamicChoices = (formDynamicField: FormDynamicField) => {
+    let data: string[] = [];
+    if (formDynamicField.fieldType === FieldType.dropdown) {
+      const extras = formDynamicField.extra[formDynamicField.fieldType];
+      if (extras) {
+        data = extras.dropdownValues ?? [];
+      }
+    }
+    if (formDynamicField.fieldType === FieldType.radio) {
+      const extras = formDynamicField.extra[formDynamicField.fieldType];
+      if (extras) {
+        data = extras.choices ?? [];
+      }
+    }
+
+    return data;
   };
 
   return (
@@ -123,6 +141,9 @@ export const FormPage: FC = () => {
           borderRadius: 5
         }}
       >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end', flexGrow: 1, width: '100%' }}>
+          <AddFormField />
+        </Box>
         <Box>
           <FormControl required sx={{ width: 220 }}>
             <TextField
@@ -224,7 +245,118 @@ export const FormPage: FC = () => {
             {genderError && <FormHelperText>{genderError}</FormHelperText>}
           </FormControl>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end', flexGrow: 1 }}>
+
+        {dynamicFieldsKeys.map((dynamicFieldKey, index) => (
+          <Box key={index}>
+            {dynamicFieldsFormated &&
+              (dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.text ||
+                dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number) && (
+                <FormControl required sx={{ width: 220 }}>
+                  <TextField
+                    label={dynamicFieldsFormated[dynamicFieldKey].label}
+                    variant="outlined"
+                    type={dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number ? 'number' : 'string'}
+                    required={dynamicFieldsFormated[dynamicFieldKey].isRequired}
+                    value={getDynamicFieldValue(dynamicFieldsFormated[dynamicFieldKey])}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    onKeyDown={evt => {
+                      if (
+                        dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number &&
+                        isNaN(Number(evt.key))
+                      )
+                        evt.preventDefault();
+                    }}
+                    inputProps={
+                      dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number
+                        ? { pattern: '([^0-9]*)' }
+                        : undefined
+                    }
+                    onChange={e => {
+                      dispatch(
+                        setDynamicFieldsValue({
+                          label: dynamicFieldsFormated[dynamicFieldKey].label,
+                          value: e.target.value
+                        })
+                      );
+                    }}
+                    error={dynamicFieldsFormated[dynamicFieldKey].error !== undefined}
+                    helperText={dynamicFieldsFormated[dynamicFieldKey].error}
+                  />
+                </FormControl>
+              )}
+            {dynamicFieldsFormated && dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.dropdown && (
+              <FormControl
+                required={dynamicFieldsFormated[dynamicFieldKey].isRequired}
+                sx={{ width: 220 }}
+                error={dynamicFieldsFormated[dynamicFieldKey].error !== undefined}
+              >
+                <InputLabel shrink={true}>{dynamicFieldsFormated[dynamicFieldKey].label}</InputLabel>
+                <Select
+                  input={<OutlinedInput notched label={dynamicFieldsFormated[dynamicFieldKey].label} />}
+                  fullWidth
+                  value={getDynamicFieldValue(dynamicFieldsFormated[dynamicFieldKey])}
+                  onChange={e => {
+                    console.log(e.target.value, dynamicFieldsFormated[dynamicFieldKey].label);
+                    dispatch(
+                      setDynamicFieldsValue({
+                        label: dynamicFieldsFormated[dynamicFieldKey].label,
+                        value: e.target.value
+                      })
+                    );
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {getDynamicChoices(dynamicFieldsFormated[dynamicFieldKey]).map((val, index) => (
+                    <MenuItem value={val} key={index}>
+                      {val}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {dynamicFieldsFormated[dynamicFieldKey].error && (
+                  <FormHelperText>{dynamicFieldsFormated[dynamicFieldKey].error}</FormHelperText>
+                )}
+              </FormControl>
+
+              //  <FormControl required sx={{ width: 220 }}>
+              //     <TextField
+              //       label={dynamicFieldsFormated[dynamicFieldKey].label}
+              //       variant="outlined"
+              //       type={dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number ? 'number' : 'string'}
+              //       required={dynamicFieldsFormated[dynamicFieldKey].isRequired}
+              //       value={getDynamicFieldValue(dynamicFieldsFormated[dynamicFieldKey])}
+              //       InputLabelProps={{
+              //         shrink: true
+              //       }}
+              //       onKeyDown={evt => {
+              //         if (dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number && isNaN(Number(evt.key)))
+              //           evt.preventDefault();
+              //       }}
+              //       inputProps={
+              //         dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number
+              //           ? { pattern: '([^0-9]*)' }
+              //           : undefined
+              //       }
+              //       onChange={e => {
+              //         dispatch(
+              //           setDynamicFieldsValue({
+              //             label: dynamicFieldsFormated[dynamicFieldKey].label,
+              //             value: e.target.value
+              //           })
+              //         );
+              //       }}
+              //       error={dynamicFieldsFormated[dynamicFieldKey].error !== undefined}
+              //       helperText={dynamicFieldsFormated[dynamicFieldKey].error}
+              //     />
+              //   </FormControl>
+            )}
+          </Box>
+        ))}
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end', flexGrow: 1, width: '100%' }}>
           <Button
             variant="contained"
             disabled={!hasValidData || isLoading}
