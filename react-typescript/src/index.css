@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'monofut';
+  src: url('assets/monofut-webfont.woff') format('woff');
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+p {
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-family: monofut, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+    Droid Sans, Helvetica Neue, sans-serif;
+  letter-spacing: 1px;
+  color: #495057;
+}

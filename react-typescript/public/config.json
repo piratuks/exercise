@@ -1,0 +1,6 @@
+{
+  "environment": "development",
+  "apiEndpoint": "randomAPI",
+  "apiVersionPrefix": "v1",
+  "version": "v1"
+}

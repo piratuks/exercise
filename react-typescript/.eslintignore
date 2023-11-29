@@ -1,0 +1,7 @@
+.eslintrc.js
+public/**
+public/mockServiceWorker.js
+build
+build/**
+coverage
+public/index.html
