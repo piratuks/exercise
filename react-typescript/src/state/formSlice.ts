@@ -75,6 +75,10 @@ export const formSlice = createSlice({
         state.dynamicFields.map(item => item.label)
       );
     },
+    removeDynamicField: (state, action: PayloadAction<string>) => {
+      state.dynamicFields = state.dynamicFields.filter(item => item.label !== action.payload);
+      if (state.dynamicFieldsFormated) delete state.dynamicFieldsFormated[action.payload];
+    },
     setDynamicFieldsValue: (state, action: PayloadAction<{ label: string; value: string }>) => {
       if (!state.dynamicFieldsFormated) return;
 
@@ -220,5 +224,6 @@ export const {
   setEmailProviders,
   resetState,
   setDynamicFields,
-  setDynamicFieldsValue
+  setDynamicFieldsValue,
+  removeDynamicField
 } = formSlice.actions;

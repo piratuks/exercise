@@ -1,9 +1,11 @@
+import { Remove } from '@mui/icons-material';
 import {
   Button,
   FormControl,
   FormControlLabel,
   FormHelperText,
   FormLabel,
+  IconButton,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -20,6 +22,7 @@ import { useAppDispatch, useAppSelector } from 'state/configureStore';
 import { useSaveUserMutation } from 'state/formApi';
 import {
   FormDynamicField,
+  removeDynamicField,
   resetState,
   selectAge,
   selectAgeError,
@@ -105,6 +108,14 @@ export const FormPage: FC = () => {
 
   const getDynamicFieldValue = (formDynamicField: FormDynamicField) => {
     return formDynamicField.extra[formDynamicField.fieldType]?.value ?? '';
+  };
+
+  const handleClickShow = (key: string) => {
+    dispatch(removeDynamicField(key));
+  };
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
   const getDynamicChoices = (formDynamicField: FormDynamicField) => {
@@ -251,7 +262,7 @@ export const FormPage: FC = () => {
             {dynamicFieldsFormated &&
               (dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.text ||
                 dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number) && (
-                <FormControl required sx={{ width: 220 }}>
+                <FormControl required sx={{ width: 200 }}>
                   <TextField
                     label={dynamicFieldsFormated[dynamicFieldKey].label}
                     variant="outlined"
@@ -289,7 +300,7 @@ export const FormPage: FC = () => {
             {dynamicFieldsFormated && dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.dropdown && (
               <FormControl
                 required={dynamicFieldsFormated[dynamicFieldKey].isRequired}
-                sx={{ width: 220 }}
+                sx={{ width: 200 }}
                 error={dynamicFieldsFormated[dynamicFieldKey].error !== undefined}
               >
                 <InputLabel shrink={true}>{dynamicFieldsFormated[dynamicFieldKey].label}</InputLabel>
@@ -298,7 +309,6 @@ export const FormPage: FC = () => {
                   fullWidth
                   value={getDynamicFieldValue(dynamicFieldsFormated[dynamicFieldKey])}
                   onChange={e => {
-                    console.log(e.target.value, dynamicFieldsFormated[dynamicFieldKey].label);
                     dispatch(
                       setDynamicFieldsValue({
                         label: dynamicFieldsFormated[dynamicFieldKey].label,
@@ -320,39 +330,44 @@ export const FormPage: FC = () => {
                   <FormHelperText>{dynamicFieldsFormated[dynamicFieldKey].error}</FormHelperText>
                 )}
               </FormControl>
-
-              //  <FormControl required sx={{ width: 220 }}>
-              //     <TextField
-              //       label={dynamicFieldsFormated[dynamicFieldKey].label}
-              //       variant="outlined"
-              //       type={dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number ? 'number' : 'string'}
-              //       required={dynamicFieldsFormated[dynamicFieldKey].isRequired}
-              //       value={getDynamicFieldValue(dynamicFieldsFormated[dynamicFieldKey])}
-              //       InputLabelProps={{
-              //         shrink: true
-              //       }}
-              //       onKeyDown={evt => {
-              //         if (dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number && isNaN(Number(evt.key)))
-              //           evt.preventDefault();
-              //       }}
-              //       inputProps={
-              //         dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.number
-              //           ? { pattern: '([^0-9]*)' }
-              //           : undefined
-              //       }
-              //       onChange={e => {
-              //         dispatch(
-              //           setDynamicFieldsValue({
-              //             label: dynamicFieldsFormated[dynamicFieldKey].label,
-              //             value: e.target.value
-              //           })
-              //         );
-              //       }}
-              //       error={dynamicFieldsFormated[dynamicFieldKey].error !== undefined}
-              //       helperText={dynamicFieldsFormated[dynamicFieldKey].error}
-              //     />
-              //   </FormControl>
             )}
+            {dynamicFieldsFormated && dynamicFieldsFormated[dynamicFieldKey].fieldType === FieldType.radio && (
+              <FormControl
+                required={dynamicFieldsFormated[dynamicFieldKey].isRequired}
+                sx={{ width: 200 }}
+                error={dynamicFieldsFormated[dynamicFieldKey].error !== undefined}
+              >
+                <FormLabel>{dynamicFieldsFormated[dynamicFieldKey].label}</FormLabel>
+                <RadioGroup
+                  value={getDynamicFieldValue(dynamicFieldsFormated[dynamicFieldKey])}
+                  onChange={e => {
+                    dispatch(
+                      setDynamicFieldsValue({
+                        label: dynamicFieldsFormated[dynamicFieldKey].label,
+                        value: e.target.value
+                      })
+                    );
+                  }}
+                >
+                  {getDynamicChoices(dynamicFieldsFormated[dynamicFieldKey]).map((val, index) => (
+                    <FormControlLabel key={index} value={val} control={<Radio />} label={val} />
+                  ))}
+                </RadioGroup>
+                {dynamicFieldsFormated[dynamicFieldKey].error && (
+                  <FormHelperText>{dynamicFieldsFormated[dynamicFieldKey].error}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+            <IconButton
+              sx={{ width: 20 }}
+              onClick={() => {
+                handleClickShow(dynamicFieldKey);
+              }}
+              onMouseDown={handleMouseDown}
+              edge="end"
+            >
+              <Remove />
+            </IconButton>
           </Box>
         ))}
 

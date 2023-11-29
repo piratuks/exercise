@@ -57,11 +57,11 @@ export const AddFormField: FC = () => {
   const isRequired = useAppSelector(selectIsRequired);
   const extras = useAppSelector(selectExtras);
 
-  const handleClickShowPassword = () => {
+  const handleClickShow = () => {
     dispatch(setChoices(localChoices));
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -179,11 +179,7 @@ export const AddFormField: FC = () => {
                       }}
                       endAdornment={
                         <InputAdornment position="end">
-                          <IconButton
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
+                          <IconButton onClick={handleClickShow} onMouseDown={handleMouseDown} edge="end">
                             <Add />
                           </IconButton>
                         </InputAdornment>
