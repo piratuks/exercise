@@ -25,8 +25,36 @@ extern "C"
         return a * b;
     }
 
+    int add(int* a, int* b, int* result) {
+        *result = *a + *b;
+        return 1000;
+    }
+
     JNIEXPORT jint JNICALL Java_cplusplus_CWrapper_multiply(JNIEnv* env, jobject obj, jint a, jint b)
     {
         return multiply(a, b);
     }
+
+    JNIEXPORT jint JNICALL Java_cplusplus_CWrapper_add(JNIEnv* env, jobject obj, jobject a, jobject b, jobject result) {
+        jclass atomicIntegerClassA = env->GetObjectClass(a);
+        jmethodID atomicIntegerGetMethodA = env->GetMethodID(atomicIntegerClassA, "get", "()I");
+        jclass atomicIntegerClassB = env->GetObjectClass(b);
+        jmethodID atomicIntegerGetMethodB = env->GetMethodID(atomicIntegerClassB, "get", "()I");
+        jclass atomicIntegerClassRes = env->GetObjectClass(b);
+        jmethodID atomicIntegerGetMethodRes = env->GetMethodID(atomicIntegerClassRes, "get", "()I");
+        jmethodID atomicIntegerSetMethodRes = env->GetMethodID(atomicIntegerClassRes, "set", "(I)V");
+
+        int aValue = env->CallIntMethod(a, atomicIntegerGetMethodA);
+        int bValue = env->CallIntMethod(b, atomicIntegerGetMethodB);
+
+        int resultValue;
+        int functionRes = add(&aValue, &bValue, &resultValue);
+
+        env->CallVoidMethod(result, atomicIntegerSetMethodRes, resultValue);
+
+        return functionRes;
+    }
 }
+
+
+

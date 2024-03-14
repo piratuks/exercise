@@ -11,6 +11,10 @@
 # production
 /build
 
+bin
+
+*.log
+
 # misc
 .DS_Store
 .env.local
