@@ -35,22 +35,30 @@ extern "C"
         return multiply(a, b);
     }
 
-    JNIEXPORT jint JNICALL Java_cplusplus_CWrapper_add(JNIEnv* env, jobject obj, jobject a, jobject b, jobject result) {
+    JNIEXPORT jint JNICALL Java_cplusplus_CWrapper_add(JNIEnv* env, jobject obj, jobject a, jobject b, jobject result, jobject charVal) {
         jclass atomicIntegerClassA = env->GetObjectClass(a);
-        jmethodID atomicIntegerGetMethodA = env->GetMethodID(atomicIntegerClassA, "get", "()I");
         jclass atomicIntegerClassB = env->GetObjectClass(b);
-        jmethodID atomicIntegerGetMethodB = env->GetMethodID(atomicIntegerClassB, "get", "()I");
         jclass atomicIntegerClassRes = env->GetObjectClass(b);
+        jclass atomicCharClass = env->GetObjectClass(charVal);
+
+        jmethodID atomicIntegerGetMethodA = env->GetMethodID(atomicIntegerClassA, "get", "()I");
+        jmethodID atomicIntegerGetMethodB = env->GetMethodID(atomicIntegerClassB, "get", "()I");
+        jmethodID atomicCharGetMethod = env->GetMethodID(atomicCharClass, "getValue", "()C");
+        jmethodID atomicCharSetMethod = env->GetMethodID(atomicCharClass, "setValue", "(C)V");
         jmethodID atomicIntegerGetMethodRes = env->GetMethodID(atomicIntegerClassRes, "get", "()I");
         jmethodID atomicIntegerSetMethodRes = env->GetMethodID(atomicIntegerClassRes, "set", "(I)V");
 
         int aValue = env->CallIntMethod(a, atomicIntegerGetMethodA);
         int bValue = env->CallIntMethod(b, atomicIntegerGetMethodB);
+        int charValue = env->CallCharMethod(charVal, atomicCharGetMethod);
 
         int resultValue;
         int functionRes = add(&aValue, &bValue, &resultValue);
 
         env->CallVoidMethod(result, atomicIntegerSetMethodRes, resultValue);
+        env->CallVoidMethod(charVal, atomicCharSetMethod, charValue);
+
+        printf("%c", charValue);
 
         return functionRes;
     }
