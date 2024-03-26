@@ -1,0 +1,4 @@
+<router-outlet></router-outlet>
+
+<app-table [tableData]="paginatedData"></app-table>
+<app-pagination [totalDataCount]="totalDataCount" [currentPage]="currentPage" [itemsPerPage]="itemsPerPage" (onPageChanged)="onPageChanged($event)"></app-pagination>
