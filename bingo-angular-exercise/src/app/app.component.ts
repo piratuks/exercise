@@ -7,7 +7,7 @@ import { MocksService } from './services/mocks.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'earnbet-test';
+  title = 'bingo-angular-exercise';
 
   currentPage: number = 1;
   itemsPerPage: number = 10;
