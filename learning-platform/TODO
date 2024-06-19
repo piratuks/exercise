@@ -1,5 +1,4 @@
 Nauja diagrama
-Paklausti del FE 
 
 ## General Application Requirements
 
@@ -12,16 +11,5 @@ Paklausti del FE
 - Students can get a list of his reviews.
 - Students can cancel a review before the start.
 
-## Mentor Requirements
 
-- Mentors can get a list of their reviews.
-- Mentors can cancel a review before the start.
-- Mentors can start a review once the time has come.
-- Mentors can complete a review once it has started and provide a score with a comment. The reviews can be completed any time after they have started.
-
-## Administrator Requirements
-
-- Administrators can get a list of all reviews.
-- Administrators can get a list of any user’s reviews.
-
-
+schedule / review ir users

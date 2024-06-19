@@ -60,6 +60,7 @@
     "@loopback/security": "^0.11.3",
     "@loopback/service-proxy": "^7.0.3",
     "loopback-connector-postgresql": "^7.1.2",
+    "moment": "^2.30.1",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

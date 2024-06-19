@@ -17,9 +17,9 @@ export class Review extends Entity {
   id?: number;
 
   @property({
-    type: 'string',
+    type: 'number',
   })
-  grade?: string;
+  grade?: number;
 
   @property({
     type: 'string',

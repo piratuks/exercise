@@ -36,6 +36,8 @@ export class MyAuthorizationProvider implements Provider<Authorizer> {
       const userType = await this.userTypeRepository.findById(
         userByID.user_type_id,
       );
+      if (userType) this.user.type = userType.type;
+
       if (
         metadata.allowedRoles &&
         !metadata.allowedRoles.includes(userType.type)

@@ -17,18 +17,29 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Review} from '../models';
-import {ReviewRepository} from '../repositories';
+import {Review, ReviewSchedule} from '../models';
+import {ReviewRepository, ReviewScheduleRepository} from '../repositories';
 import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
+import {inject} from '@loopback/core';
+import {SecurityBindings, UserProfile} from '@loopback/security';
+import {Roles} from '../enums/roles';
+import moment from 'moment';
 
 @authenticate('jwt')
 export class ReviewController {
   constructor(
     @repository(ReviewRepository)
     public reviewRepository: ReviewRepository,
+    @repository(ReviewScheduleRepository)
+    public reviewScheduleRepository: ReviewScheduleRepository,
+    @inject(SecurityBindings.USER, {optional: true}) private user: UserProfile,
   ) {}
 
   @post('/reviews')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Review model instance',
     content: {'application/json': {schema: getModelSchemaRef(Review)}},
@@ -50,6 +61,9 @@ export class ReviewController {
   }
 
   @get('/reviews/count')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Review model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +72,37 @@ export class ReviewController {
     return this.reviewRepository.count(where);
   }
 
+  @get('/reviews/by-schedule')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
+  @response(200, {
+    description: 'Array of Review model instances',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Review, {includeRelations: true}),
+      },
+    },
+  })
+  async findByUserId(
+    @param.filter(ReviewSchedule)
+    filter?: Filter<ReviewSchedule>,
+  ): Promise<Review[]> {
+    const reviewSchedules = await this.reviewScheduleRepository.find(filter);
+    const ids = reviewSchedules.map(rs => rs.id);
+    const reviews = await this.reviewRepository.find({
+      where: {
+        id: {inq: ids},
+      },
+    });
+
+    return reviews;
+  }
+
   @get('/reviews')
+  @authorize({
+    allowedRoles: ['administrator', 'mentor'],
+  })
   @response(200, {
     description: 'Array of Review model instances',
     content: {
@@ -71,10 +115,164 @@ export class ReviewController {
     },
   })
   async find(@param.filter(Review) filter?: Filter<Review>): Promise<Review[]> {
+    if (this.user.type === Roles.MENTOR) {
+      const mentorReviewSchedules = await this.reviewScheduleRepository.find({
+        where: {
+          mentor_id: this.user.id,
+        },
+      });
+
+      const ids = mentorReviewSchedules
+        .map(rs => rs.id)
+        .filter(id => typeof id === 'number') as number[];
+
+      const mentorFilter: Filter<Review> = {
+        ...filter,
+        where: {
+          ...filter?.where,
+          schedule_id: {inq: ids},
+        },
+      };
+      const reviews = await this.reviewRepository.find(mentorFilter);
+
+      return reviews;
+    }
+
     return this.reviewRepository.find(filter);
   }
 
+  @post('/reviews/{id}/start')
+  @authorize({
+    allowedRoles: ['mentor'],
+  })
+  @response(200, {
+    description: 'Review model instance',
+    content: {'application/json': {schema: {type: 'string'}}},
+  })
+  async startReview(@param.path.number('id') id: number) {
+    const review = await this.reviewRepository.findById(id);
+    const mentorReviewSchedule = await this.reviewScheduleRepository.findOne({
+      where: {
+        id: review.schedule_id,
+      },
+    });
+
+    if (!mentorReviewSchedule) return 'Review has no schedule';
+
+    if (review.review_status_id !== 1)
+      //not equal pending
+      return 'Review has been already started / canceled or completed';
+
+    const currentTime = moment();
+    const startDateTime = moment(mentorReviewSchedule.start);
+
+    if (!currentTime.isSameOrAfter(startDateTime))
+      return 'Review cannot be started yet';
+
+    review.review_status_id = 2; //in progress
+    this.reviewRepository.updateById(review.id, review);
+
+    return 'Review has been started';
+  }
+
+  @post('/reviews/{id}/cancel')
+  @authorize({
+    allowedRoles: ['mentor'],
+  })
+  @response(200, {
+    description: 'Review model instance',
+    content: {'application/json': {schema: {type: 'string'}}},
+  })
+  async cancelReview(@param.path.number('id') id: number) {
+    const review = await this.reviewRepository.findById(id);
+    const mentorReviewSchedule = await this.reviewScheduleRepository.findOne({
+      where: {
+        id: review.schedule_id,
+      },
+    });
+
+    if (!mentorReviewSchedule) return 'Review has no schedule';
+
+    if (review.review_status_id !== 1)
+      //not equal pending
+      return 'Review has been already started / canceled or completed';
+
+    const currentTime = moment();
+    const startDateTime = moment(mentorReviewSchedule.start);
+
+    if (currentTime.isSameOrAfter(startDateTime))
+      return 'Review cannot be canceled at this time';
+
+    review.review_status_id = 4; //canceled
+    this.reviewRepository.updateById(review.id, review);
+
+    mentorReviewSchedule.end = currentTime.format('YYYY-MM-DD HH:mm:ss.SSSZ');
+    this.reviewScheduleRepository.updateById(
+      mentorReviewSchedule.id,
+      mentorReviewSchedule,
+    );
+
+    return 'Review has been canceled';
+  }
+
+  @post('/reviews/{id}/complete')
+  @authorize({
+    allowedRoles: ['mentor'],
+  })
+  @response(200, {
+    description: 'Review model instance',
+    content: {'application/json': {schema: {type: 'string'}}},
+  })
+  async completeReview(
+    @param.path.number('id') id: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              grade: {type: 'number'},
+              comment: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    data: {grade?: number; comment?: string},
+  ) {
+    const review = await this.reviewRepository.findById(id);
+    const mentorReviewSchedule = await this.reviewScheduleRepository.findOne({
+      where: {
+        id: review.schedule_id,
+      },
+    });
+
+    if (!mentorReviewSchedule) return 'Review has no schedule';
+
+    if (review.review_status_id !== 2)
+      //not equal in progress
+      return 'Review has not been started';
+
+    const currentTime = moment();
+
+    review.review_status_id = 3; //canceled
+    review.grade = data.grade;
+    review.comment = data.comment;
+    this.reviewRepository.updateById(review.id, review);
+
+    mentorReviewSchedule.end = currentTime.format('YYYY-MM-DD HH:mm:ss.SSSZ');
+    this.reviewScheduleRepository.updateById(
+      mentorReviewSchedule.id,
+      mentorReviewSchedule,
+    );
+
+    return 'Review has been completed';
+  }
+
   @patch('/reviews')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Review PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -94,6 +292,9 @@ export class ReviewController {
   }
 
   @get('/reviews/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Review model instance',
     content: {
@@ -111,6 +312,9 @@ export class ReviewController {
   }
 
   @patch('/reviews/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(204, {
     description: 'Review PATCH success',
   })
@@ -129,6 +333,9 @@ export class ReviewController {
   }
 
   @put('/reviews/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(204, {
     description: 'Review PUT success',
   })
@@ -140,6 +347,9 @@ export class ReviewController {
   }
 
   @del('/reviews/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(204, {
     description: 'Review DELETE success',
   })
