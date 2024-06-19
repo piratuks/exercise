@@ -1,0 +1,47 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table review_schedules {
+  id integer [primary key]
+  start datetime2
+  end datetime2 
+  mentor_id integer
+  student_id integer [ref: - reviews.id]
+}
+
+Table review_statuses {
+  id integer [primary key]
+  status varchar
+}
+
+Table reviews {
+  id integer [primary key]
+  grade varchar
+  comment varchar
+  review_status_id integer
+  schedule_id integer
+}
+
+Table user_credentials {
+  id integer [primary key]
+  password varchar
+  user_id integer [ref: - users.id]
+}
+
+Table user_types {
+  id integer [primary key]
+  type varchar
+}
+
+Table users {
+  id integer [primary key]
+  email varchar
+  user_type_id varchar
+  username datetime2
+}
+
+
+Ref: review_schedules.mentor_id > users.id 
+Ref: review_schedules.student_id > users.id 
+Ref: reviews.review_status_id > review_statuses.id
+Ref: user_types.id < users.user_type_id

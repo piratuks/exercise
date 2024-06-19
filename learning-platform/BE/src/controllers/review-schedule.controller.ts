@@ -20,6 +20,7 @@ import {
 import {ReviewSchedule} from '../models';
 import {ReviewScheduleRepository} from '../repositories';
 import {authenticate} from '@loopback/authentication';
+import { authorize } from '@loopback/authorization';
 
 @authenticate('jwt')
 export class ReviewScheduleController {
@@ -29,6 +30,9 @@ export class ReviewScheduleController {
   ) {}
 
   @post('/review-schedules')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'ReviewSchedule model instance',
     content: {'application/json': {schema: getModelSchemaRef(ReviewSchedule)}},
@@ -50,6 +54,9 @@ export class ReviewScheduleController {
   }
 
   @get('/review-schedules/count')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'ReviewSchedule model count',
     content: {'application/json': {schema: CountSchema}},
@@ -61,6 +68,9 @@ export class ReviewScheduleController {
   }
 
   @get('/review-schedules')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Array of ReviewSchedule model instances',
     content: {
@@ -79,6 +89,9 @@ export class ReviewScheduleController {
   }
 
   @patch('/review-schedules')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'ReviewSchedule PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -98,6 +111,9 @@ export class ReviewScheduleController {
   }
 
   @get('/review-schedules/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'ReviewSchedule model instance',
     content: {
@@ -115,6 +131,9 @@ export class ReviewScheduleController {
   }
 
   @patch('/review-schedules/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(204, {
     description: 'ReviewSchedule PATCH success',
   })
@@ -133,6 +152,9 @@ export class ReviewScheduleController {
   }
 
   @put('/review-schedules/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(204, {
     description: 'ReviewSchedule PUT success',
   })
@@ -144,6 +166,9 @@ export class ReviewScheduleController {
   }
 
   @del('/review-schedules/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(204, {
     description: 'ReviewSchedule DELETE success',
   })

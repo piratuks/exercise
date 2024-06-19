@@ -25,6 +25,7 @@ import {inject} from '@loopback/core';
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Roles} from '../enums/roles';
 import moment from 'moment';
+import {MentorUserService} from '../services/user.service';
 
 @authenticate('jwt')
 export class ReviewController {
@@ -34,6 +35,8 @@ export class ReviewController {
     @repository(ReviewScheduleRepository)
     public reviewScheduleRepository: ReviewScheduleRepository,
     @inject(SecurityBindings.USER, {optional: true}) private user: UserProfile,
+    @inject('services.MentorUserService')
+    private mentorUserService: MentorUserService,
   ) {}
 
   @post('/reviews')
@@ -101,7 +104,7 @@ export class ReviewController {
 
   @get('/reviews')
   @authorize({
-    allowedRoles: ['administrator', 'mentor'],
+    allowedRoles: ['administrator', 'mentor', 'student'],
   })
   @response(200, {
     description: 'Array of Review model instances',
@@ -115,13 +118,22 @@ export class ReviewController {
     },
   })
   async find(@param.filter(Review) filter?: Filter<Review>): Promise<Review[]> {
-    if (this.user.type === Roles.MENTOR) {
-      const mentorReviewSchedules = await this.reviewScheduleRepository.find({
-        where: {
-          mentor_id: this.user.id,
-        },
-      });
+    if (this.user.type === Roles.MENTOR || this.user.type === Roles.STUDENT) {
+      let mentorReviewSchedules: ReviewSchedule[] = [];
 
+      if (this.user.type === Roles.MENTOR) {
+        mentorReviewSchedules = await this.reviewScheduleRepository.find({
+          where: {
+            mentor_id: this.user.id,
+          },
+        });
+      } else if (this.user.type === Roles.STUDENT) {
+        mentorReviewSchedules = await this.reviewScheduleRepository.find({
+          where: {
+            student_id: this.user.id,
+          },
+        });
+      }
       const ids = mentorReviewSchedules
         .map(rs => rs.id)
         .filter(id => typeof id === 'number') as number[];
@@ -137,7 +149,6 @@ export class ReviewController {
 
       return reviews;
     }
-
     return this.reviewRepository.find(filter);
   }
 
@@ -177,7 +188,7 @@ export class ReviewController {
 
   @post('/reviews/{id}/cancel')
   @authorize({
-    allowedRoles: ['mentor'],
+    allowedRoles: ['mentor', 'student'],
   })
   @response(200, {
     description: 'Review model instance',
@@ -267,6 +278,35 @@ export class ReviewController {
     );
 
     return 'Review has been completed';
+  }
+
+  @post('/reviews/{mentor_id}/schedule')
+  @authorize({
+    allowedRoles: ['student'],
+  })
+  @response(200, {
+    description: 'Review model instance',
+    content: {'application/json': {schema: {type: 'string'}}},
+  })
+  async scheduleReview(
+    @param.path.number('mentor_id') mentor_id: number,
+    @param.query.string('time') time: number,
+  ) {
+    const newTime = this.mentorUserService.getNewTime(time);
+    const freeMentors = await this.mentorUserService.getFreeMentors(newTime);
+    const mentor = freeMentors.find(item => item.id === mentor_id);
+
+    if (!mentor)
+      return 'Review cannot be scheduled for selected mentor because mentor is busy at provided time';
+
+    const reviewSchedule = new ReviewSchedule();
+    reviewSchedule.mentor_id = mentor.id;
+    reviewSchedule.student_id = this.user.id;
+    reviewSchedule.start = newTime.format('YYYY-MM-DD HH:mm:ss.SSSZ');
+
+    this.reviewScheduleRepository.create(reviewSchedule);
+
+    return 'Review has been scheduled';
   }
 
   @patch('/reviews')

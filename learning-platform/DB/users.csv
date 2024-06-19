@@ -1,21 +1,19 @@
-1,John,Doe,john.doe@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,4
-2,Jane,Smith,jane.smith@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,3
-3,Michael,Johnson,michael.johnson@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,3
-4,Emily,Davis,emily.davis@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,3
-5,David,Martinez,david.martinez@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,3
-6,Sarah,Brown,sarah.brown@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,3
-7,Robert,Wilson,robert.wilson@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-8,Laura,Taylor,laura.taylor@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-9,Daniel,Anderson,daniel.anderson@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-10,Jessica,Thomas,jessica.thomas@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-11,James,Hernandez,james.hernandez@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-12,Karen,Moore,karen.moore@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-13,Richard,Martin,richard.martin@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-14,Maria,Jackson,maria.jackson@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-15,Charles,Lee,charles.lee@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-16,Nancy,Perez,nancy.perez@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-17,Christopher,Thompson,christopher.thompson@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-18,Linda,White,linda.white@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-19,Matthew,Harris,matthew.harris@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-20,Barbara,Sanchez,barbara.sanchez@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
-21,Paul,Clark,paul.clark@example.com,$2b$10$Vh.Q2kbsrW0A5QUN1hOMjeFzU./j4uz5s9tSL7uPiZ5wB.O4A1J5G,1
+1,john.doe@example.com,4,John Doe
+2,jane.smith@example.com,3,Jane Smith
+3,michael.johnson@example.com,3,Michael Johnson
+4,emily.davis@example.com,3,Emily Davis
+5,david.martinez@example.com,3,David Martinez
+6,sarah.brown@example.com,3,Sarah Brown
+8,laura.taylor@example.com,1,Laura Taylor
+9,daniel.anderson@example.com,1,Daniel Anderson
+10,jessica.thomas@example.com,1,Jessica Thomas
+11,james.hernandez@example.com,1,James Hernandez
+12,karen.moore@example.com,1,Karen Moore
+13,richard.martin@example.com,1,Richard Martin
+14,maria.jackson@example.com,1,Maria Jackson
+15,charles.lee@example.com,1,Charles Lee
+16,nancy.perez@example.com,1,Nancy Perez
+17,christopher.thompson@example.com,1,Christopher Thompson
+18,linda.white@example.com,1,Linda White
+19,matthew.harris@example.com,1,Matthew Harris
+21,paul.clark@example.com,1,Paul Clark

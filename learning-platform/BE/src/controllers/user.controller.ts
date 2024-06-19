@@ -18,7 +18,7 @@ import {
   response,
 } from '@loopback/rest';
 import {User} from '../models';
-import {UserRepository} from '../repositories';
+import {ReviewScheduleRepository, UserRepository} from '../repositories';
 import {authenticate, TokenService} from '@loopback/authentication';
 import {
   Credentials,
@@ -28,6 +28,9 @@ import {
 } from '@loopback/authentication-jwt';
 import {inject} from '@loopback/core';
 import {SecurityBindings, UserProfile} from '@loopback/security';
+import {authorize} from '@loopback/authorization';
+import moment from 'moment';
+import { MentorUserService } from '../services/user.service';
 
 export class UserController {
   constructor(
@@ -39,6 +42,10 @@ export class UserController {
     public user: UserProfile,
     @repository(UserRepository)
     public userRepository: UserRepository,
+    @repository(ReviewScheduleRepository)
+    public reviewScheduleRepository: ReviewScheduleRepository,
+    @inject('services.MentorUserService')
+    private mentorUserService: MentorUserService,
   ) {}
 
   @post('/users/login', {
@@ -118,6 +125,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @post('/users')
   @response(200, {
     description: 'User model instance',
@@ -140,6 +150,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @get('/users/count')
   @response(200, {
     description: 'User model count',
@@ -150,6 +163,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @get('/users')
   @response(200, {
     description: 'Array of User model instances',
@@ -167,6 +183,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @patch('/users')
   @response(200, {
     description: 'User PATCH success count',
@@ -187,6 +206,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @get('/users/{id}')
   @response(200, {
     description: 'User model instance',
@@ -204,6 +226,32 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['student'],
+  })
+  @get('/users/mentors/available')
+  @response(200, {
+    description: 'Array of available Mentor instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(User, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async findAvailableMentors(
+    @param.query.string('time') time: number,
+  ): Promise<User[]> {
+    const newTime = this.mentorUserService.getNewTime(time);
+    return this.mentorUserService.getFreeMentors(newTime);
+  }
+
+  @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @patch('/users/{id}')
   @response(204, {
     description: 'User PATCH success',
@@ -223,6 +271,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @put('/users/{id}')
   @response(204, {
     description: 'User PUT success',
@@ -235,6 +286,9 @@ export class UserController {
   }
 
   @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @del('/users/{id}')
   @response(204, {
     description: 'User DELETE success',
