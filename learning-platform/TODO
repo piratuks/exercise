@@ -1,0 +1,27 @@
+Nauja diagrama
+
+## General Application Requirements
+
+- API has to be protected with an authentication mechanism of your choice.
+- There are three types of users: students, mentors and administrators. Each user has at least a name, email and password.
+- Review can be in four states: pending, in_progress, completed, canceled.
+- Reviews are scheduled in 30 minute increments (e.g. 9:00, 9:30, 10:00, etc.) and last 60 minutes. After the 60 minutes, a mentor is considered available even if he hasn't finished the review.
+
+## Student Requirements
+
+- Students can get a list of available mentors at a specific time in the future (time is accepted in 30 minute intervals).
+- Students can schedule a review with any of the available mentors at a specific time in the future (time is accepted in 30 minute intervals).
+- Students can get a list of his reviews.
+- Students can cancel a review before the start.
+
+## Mentor Requirements
+
+- Mentors can get a list of their reviews.
+- Mentors can cancel a review before the start.
+- Mentors can start a review once the time has come.
+- Mentors can complete a review once it has started and provide a score with a comment. The reviews can be completed any time after they have started.
+
+## Administrator Requirements
+
+- Administrators can get a list of all reviews.
+- Administrators can get a list of any user’s reviews.
