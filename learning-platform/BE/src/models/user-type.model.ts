@@ -1,5 +1,4 @@
-import {Entity, hasMany, model, property} from '@loopback/repository';
-import { User } from './user.model';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
@@ -23,16 +22,11 @@ export class UserType extends Entity {
   })
   type: string;
 
-  @hasMany(() => User)
-  users: User[];
-  
   constructor(data?: Partial<UserType>) {
     super(data);
   }
 }
 
-export interface UserTypeRelations {
-  users?: User[];
-}
+export interface UserTypeRelations {}
 
 export type UserTypeWithRelations = UserType & UserTypeRelations;

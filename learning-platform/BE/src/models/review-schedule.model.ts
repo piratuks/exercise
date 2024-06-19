@@ -1,5 +1,4 @@
-import {Entity, belongsTo, hasOne, model, property} from '@loopback/repository';
-import { User } from './user.model';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
@@ -28,24 +27,24 @@ export class ReviewSchedule extends Entity {
   })
   end?: string;
 
-  @belongsTo(() => User)
-  mentor_id?: number;
+  @property({
+    type: 'number',
+    required: false,
+  })
+  mentor_id: number;
 
-  @belongsTo(() => User)
-  student_id?: number;
-
-  @hasOne(() => ReviewSchedule)
-  reviewSchedule: ReviewSchedule;
+  @property({
+    type: 'number',
+    required: false,
+  })
+  student_id: number;
 
   constructor(data?: Partial<ReviewSchedule>) {
     super(data);
   }
 }
 
-export interface ReviewScheduleRelations {
-  mentor?: User;
-  student?: User;
-  reviewSchedule?: ReviewSchedule;
-}
+export interface ReviewScheduleRelations {}
 
-export type ReviewScheduleWithRelations = ReviewSchedule & ReviewScheduleRelations;
+export type ReviewScheduleWithRelations = ReviewSchedule &
+  ReviewScheduleRelations;

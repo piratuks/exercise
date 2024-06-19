@@ -4,41 +4,38 @@ import {Entity, model, property} from '@loopback/repository';
   settings: {
     postgresql: {
       schema: 'public',
-      table: 'users',
+      table: 'user_credentials',
     },
   },
 })
-export class User extends Entity {
+export class UserCredential extends Entity {
   @property({
     type: 'number',
     id: true,
     generated: true,
   })
-  id: number;
+  id?: number;
 
   @property({
     type: 'string',
     required: true,
   })
-  username: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  email: string;
+  password: string;
 
   @property({
     type: 'number',
     required: true,
   })
-  user_type_id: number;
+  user_id: number;
 
-  constructor(data?: Partial<User>) {
+  constructor(data?: Partial<UserCredential>) {
     super(data);
   }
 }
 
-export interface UserRelations {}
+export interface UserCredentialRelations {
+  // describe navigational properties here
+}
 
-export type UserWithRelations = User & UserRelations;
+export type UserCredentialWithRelations = UserCredential &
+  UserCredentialRelations;

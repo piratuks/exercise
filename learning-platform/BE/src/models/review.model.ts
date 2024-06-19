@@ -1,6 +1,4 @@
-import {Entity, belongsTo, model, property} from '@loopback/repository';
-import { ReviewStatus } from './review-status.model';
-import { ReviewSchedule } from './review-schedule.model';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
@@ -28,10 +26,16 @@ export class Review extends Entity {
   })
   comment?: string;
 
-  @belongsTo(() => ReviewStatus)
+  @property({
+    type: 'number',
+    required: true,
+  })
   review_status_id: number;
 
-  @belongsTo(() => ReviewSchedule)
+  @property({
+    type: 'number',
+    required: false,
+  })
   schedule_id: number;
 
   constructor(data?: Partial<Review>) {
@@ -39,9 +43,6 @@ export class Review extends Entity {
   }
 }
 
-export interface ReviewRelations {
-  reviewStatus?: ReviewStatus;
-  reviewSchedule?: ReviewSchedule;
-}
+export interface ReviewRelations {}
 
 export type ReviewWithRelations = Review & ReviewRelations;

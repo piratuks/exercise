@@ -9,6 +9,12 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
+import {AuthenticationComponent} from '@loopback/authentication';
+import {
+  JWTAuthenticationComponent,
+  UserServiceBindings,
+} from '@loopback/authentication-jwt';
+import {PostgresqlDataSource} from './datasources';
 
 export {ApplicationConfig};
 
@@ -17,6 +23,12 @@ export class LearningPlatformBeApplication extends BootMixin(
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    this.component(AuthenticationComponent);
+
+    this.component(JWTAuthenticationComponent);
+
+    this.dataSource(PostgresqlDataSource, UserServiceBindings.DATASOURCE_NAME);
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -28,6 +40,7 @@ export class LearningPlatformBeApplication extends BootMixin(
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
     });
+
     this.component(RestExplorerComponent);
 
     this.projectRoot = __dirname;

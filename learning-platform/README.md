@@ -7,6 +7,7 @@ Version 16.3.2
 <b>Core user:</b><br>
 name - <i>admin</i> / <i>postgre</i> <br>
 password - <i>admin123</i> <br>
+all user passwords - <i>test123</i> <br>
 
 # # Schema
 
@@ -29,3 +30,5 @@ password - <i>admin123</i> <br>
 - `npm i` should be performed within BE folder ton install required dependencies
 - `npm start` should be performed to run BE API.
 - swagger can be reached at [loopback 4 swagger](http://localhost:3000/explorer/)
+
+# # FE to use BE RestAPI

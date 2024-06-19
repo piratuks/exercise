@@ -19,11 +19,13 @@ import {
 } from '@loopback/rest';
 import {ReviewSchedule} from '../models';
 import {ReviewScheduleRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class ReviewScheduleController {
   constructor(
     @repository(ReviewScheduleRepository)
-    public reviewScheduleRepository : ReviewScheduleRepository,
+    public reviewScheduleRepository: ReviewScheduleRepository,
   ) {}
 
   @post('/review-schedules')
@@ -106,7 +108,8 @@ export class ReviewScheduleController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(ReviewSchedule, {exclude: 'where'}) filter?: FilterExcludingWhere<ReviewSchedule>
+    @param.filter(ReviewSchedule, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ReviewSchedule>,
   ): Promise<ReviewSchedule> {
     return this.reviewScheduleRepository.findById(id, filter);
   }

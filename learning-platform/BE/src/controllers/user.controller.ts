@@ -19,13 +19,102 @@ import {
 } from '@loopback/rest';
 import {User} from '../models';
 import {UserRepository} from '../repositories';
+import {authenticate, TokenService} from '@loopback/authentication';
+import {
+  Credentials,
+  MyUserService,
+  TokenServiceBindings,
+  UserServiceBindings,
+} from '@loopback/authentication-jwt';
+import {inject} from '@loopback/core';
+import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
 
 export class UserController {
   constructor(
+    @inject(TokenServiceBindings.TOKEN_SERVICE)
+    public jwtService: TokenService,
+    @inject(UserServiceBindings.USER_SERVICE)
+    public userService: MyUserService,
+    @inject(SecurityBindings.USER, {optional: true})
+    public user: UserProfile,
     @repository(UserRepository)
-    public userRepository : UserRepository,
+    public userRepository: UserRepository,
   ) {}
 
+  @post('/users/login', {
+    responses: {
+      '200': {
+        description: 'Token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                token: {
+                  type: 'string',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  async login(
+    @requestBody({
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            required: ['email', 'password'],
+            properties: {
+              email: {
+                type: 'string',
+                format: 'email',
+              },
+              password: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+    })
+    credentials: Credentials,
+  ): Promise<{token: string}> {
+    // ensure the user exists, and the password is correct
+    const user = await this.userService.verifyCredentials(credentials);
+    // convert a User object into a UserProfile object (reduced set of properties)
+    const userProfile = this.userService.convertToUserProfile(user);
+    // // create a JSON Web Token based on the user profile
+    const token = await this.jwtService.generateToken(userProfile);
+    return {token};
+  }
+
+  @authenticate('jwt')
+  @get('/whoAmI', {
+    responses: {
+      '200': {
+        description: 'Return current user',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'string',
+            },
+          },
+        },
+      },
+    },
+  })
+  async whoAmI(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
+  ): Promise<string> {
+    return currentUserProfile[securityId];
+  }
+
+  @authenticate('jwt')
   @post('/users')
   @response(200, {
     description: 'User model instance',
@@ -47,17 +136,17 @@ export class UserController {
     return this.userRepository.create(user);
   }
 
+  @authenticate('jwt')
   @get('/users/count')
   @response(200, {
     description: 'User model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(User) where?: Where<User>,
-  ): Promise<Count> {
+  async count(@param.where(User) where?: Where<User>): Promise<Count> {
     return this.userRepository.count(where);
   }
 
+  @authenticate('jwt')
   @get('/users')
   @response(200, {
     description: 'Array of User model instances',
@@ -70,12 +159,11 @@ export class UserController {
       },
     },
   })
-  async find(
-    @param.filter(User) filter?: Filter<User>,
-  ): Promise<User[]> {
+  async find(@param.filter(User) filter?: Filter<User>): Promise<User[]> {
     return this.userRepository.find(filter);
   }
 
+  @authenticate('jwt')
   @patch('/users')
   @response(200, {
     description: 'User PATCH success count',
@@ -95,6 +183,7 @@ export class UserController {
     return this.userRepository.updateAll(user, where);
   }
 
+  @authenticate('jwt')
   @get('/users/{id}')
   @response(200, {
     description: 'User model instance',
@@ -106,11 +195,12 @@ export class UserController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>
+    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>,
   ): Promise<User> {
     return this.userRepository.findById(id, filter);
   }
 
+  @authenticate('jwt')
   @patch('/users/{id}')
   @response(204, {
     description: 'User PATCH success',
@@ -129,6 +219,7 @@ export class UserController {
     await this.userRepository.updateById(id, user);
   }
 
+  @authenticate('jwt')
   @put('/users/{id}')
   @response(204, {
     description: 'User PUT success',
@@ -140,6 +231,7 @@ export class UserController {
     await this.userRepository.replaceById(id, user);
   }
 
+  @authenticate('jwt')
   @del('/users/{id}')
   @response(204, {
     description: 'User DELETE success',

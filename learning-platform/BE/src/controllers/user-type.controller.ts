@@ -6,16 +6,18 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-import {param, get, getModelSchemaRef, response, requestBody, post} from '@loopback/rest';
+import {param, get, getModelSchemaRef, response} from '@loopback/rest';
 import {UserType} from '../models';
 import {UserTypeRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class UserTypeController {
   constructor(
     @repository(UserTypeRepository)
     public userTypeRepository: UserTypeRepository,
   ) {}
-  
+
   @get('/user-types/count')
   @response(200, {
     description: 'UserType model count',

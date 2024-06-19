@@ -19,11 +19,13 @@ import {
 } from '@loopback/rest';
 import {Review} from '../models';
 import {ReviewRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class ReviewController {
   constructor(
     @repository(ReviewRepository)
-    public reviewRepository : ReviewRepository,
+    public reviewRepository: ReviewRepository,
   ) {}
 
   @post('/reviews')
@@ -52,9 +54,7 @@ export class ReviewController {
     description: 'Review model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Review) where?: Where<Review>,
-  ): Promise<Count> {
+  async count(@param.where(Review) where?: Where<Review>): Promise<Count> {
     return this.reviewRepository.count(where);
   }
 
@@ -70,9 +70,7 @@ export class ReviewController {
       },
     },
   })
-  async find(
-    @param.filter(Review) filter?: Filter<Review>,
-  ): Promise<Review[]> {
+  async find(@param.filter(Review) filter?: Filter<Review>): Promise<Review[]> {
     return this.reviewRepository.find(filter);
   }
 
@@ -106,7 +104,8 @@ export class ReviewController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Review, {exclude: 'where'}) filter?: FilterExcludingWhere<Review>
+    @param.filter(Review, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Review>,
   ): Promise<Review> {
     return this.reviewRepository.findById(id, filter);
   }

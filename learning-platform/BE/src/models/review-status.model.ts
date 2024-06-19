@@ -1,5 +1,4 @@
-import {Entity, hasMany, model, property} from '@loopback/repository';
-import { Review } from './review.model';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
@@ -23,16 +22,11 @@ export class ReviewStatus extends Entity {
   })
   status: string;
 
-  @hasMany(() => Review)
-  students: Review[];
-
   constructor(data?: Partial<ReviewStatus>) {
     super(data);
   }
 }
 
-export interface ReviewStatusRelations {
-  review?: Review[];
-}
+export interface ReviewStatusRelations {}
 
 export type ReviewStatusWithRelations = ReviewStatus & ReviewStatusRelations;

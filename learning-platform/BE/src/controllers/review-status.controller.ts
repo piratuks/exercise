@@ -6,24 +6,16 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
-} from '@loopback/rest';
-import { ReviewStatusRepository } from '../repositories';
-import { ReviewStatus } from '../models';
+import {param, get, getModelSchemaRef, response} from '@loopback/rest';
+import {ReviewStatusRepository} from '../repositories';
+import {ReviewStatus} from '../models';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class ReviewStatusController {
   constructor(
     @repository(ReviewStatusRepository)
-    public reviewStatusRepository : ReviewStatusRepository,
+    public reviewStatusRepository: ReviewStatusRepository,
   ) {}
 
   @get('/review-statuses/count')
@@ -66,7 +58,8 @@ export class ReviewStatusController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(ReviewStatus, {exclude: 'where'}) filter?: FilterExcludingWhere<ReviewStatus>
+    @param.filter(ReviewStatus, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ReviewStatus>,
   ): Promise<ReviewStatus> {
     return this.reviewStatusRepository.findById(id, filter);
   }
