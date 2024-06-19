@@ -3,9 +3,6 @@ Paklausti del FE
 
 ## General Application Requirements
 
-- API has to be protected with an authentication mechanism of your choice.
-- There are three types of users: students, mentors and administrators. Each user has at least a name, email and password.
-- Review can be in four states: pending, in_progress, completed, canceled.
 - Reviews are scheduled in 30 minute increments (e.g. 9:00, 9:30, 10:00, etc.) and last 60 minutes. After the 60 minutes, a mentor is considered available even if he hasn't finished the review.
 
 ## Student Requirements
@@ -26,3 +23,5 @@ Paklausti del FE
 
 - Administrators can get a list of all reviews.
 - Administrators can get a list of any user’s reviews.
+
+

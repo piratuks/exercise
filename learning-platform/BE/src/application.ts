@@ -15,6 +15,11 @@ import {
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
 import {PostgresqlDataSource} from './datasources';
+import {MyAuthorizationProvider} from './providers/my-authorized.provider';
+import {
+  AuthorizationComponent,
+  AuthorizationTags,
+} from '@loopback/authorization';
 
 export {ApplicationConfig};
 
@@ -23,6 +28,12 @@ export class LearningPlatformBeApplication extends BootMixin(
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    this.component(AuthorizationComponent);
+
+    this.bind('authorizationProviders.my-provider')
+      .toProvider(MyAuthorizationProvider)
+      .tag(AuthorizationTags.AUTHORIZER);
 
     this.component(AuthenticationComponent);
 

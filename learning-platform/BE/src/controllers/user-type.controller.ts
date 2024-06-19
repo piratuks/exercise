@@ -10,6 +10,7 @@ import {param, get, getModelSchemaRef, response} from '@loopback/rest';
 import {UserType} from '../models';
 import {UserTypeRepository} from '../repositories';
 import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 
 @authenticate('jwt')
 export class UserTypeController {
@@ -18,6 +19,9 @@ export class UserTypeController {
     public userTypeRepository: UserTypeRepository,
   ) {}
 
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @get('/user-types/count')
   @response(200, {
     description: 'UserType model count',
@@ -28,6 +32,9 @@ export class UserTypeController {
   }
 
   @get('/user-types')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Array of UserType model instances',
     content: {
@@ -45,6 +52,9 @@ export class UserTypeController {
     return this.userTypeRepository.find(filter);
   }
 
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @get('/user-types/{id}')
   @response(200, {
     description: 'UserType model instance',

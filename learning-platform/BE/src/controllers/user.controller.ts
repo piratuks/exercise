@@ -27,7 +27,7 @@ import {
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
 import {inject} from '@loopback/core';
-import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
+import {SecurityBindings, UserProfile} from '@loopback/security';
 
 export class UserController {
   constructor(
@@ -53,6 +53,7 @@ export class UserController {
                 token: {
                   type: 'string',
                 },
+                userProfile: {type: 'object'},
               },
             },
           },
@@ -82,14 +83,16 @@ export class UserController {
       },
     })
     credentials: Credentials,
-  ): Promise<{token: string}> {
+  ): Promise<{token: string; userProfile: UserProfile}> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
     // convert a User object into a UserProfile object (reduced set of properties)
     const userProfile = this.userService.convertToUserProfile(user);
+
     // // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
-    return {token};
+
+    return {token, userProfile};
   }
 
   @authenticate('jwt')
@@ -100,7 +103,7 @@ export class UserController {
         content: {
           'application/json': {
             schema: {
-              type: 'string',
+              type: 'object',
             },
           },
         },
@@ -110,8 +113,8 @@ export class UserController {
   async whoAmI(
     @inject(SecurityBindings.USER)
     currentUserProfile: UserProfile,
-  ): Promise<string> {
-    return currentUserProfile[securityId];
+  ): Promise<UserProfile> {
+    return currentUserProfile;
   }
 
   @authenticate('jwt')

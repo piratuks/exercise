@@ -10,6 +10,7 @@ import {param, get, getModelSchemaRef, response} from '@loopback/rest';
 import {ReviewStatusRepository} from '../repositories';
 import {ReviewStatus} from '../models';
 import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 
 @authenticate('jwt')
 export class ReviewStatusController {
@@ -19,6 +20,9 @@ export class ReviewStatusController {
   ) {}
 
   @get('/review-statuses/count')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'ReviewStatus model count',
     content: {'application/json': {schema: CountSchema}},
@@ -30,6 +34,9 @@ export class ReviewStatusController {
   }
 
   @get('/review-statuses')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'Array of ReviewStatus model instances',
     content: {
@@ -48,6 +55,9 @@ export class ReviewStatusController {
   }
 
   @get('/review-statuses/{id}')
+  @authorize({
+    allowedRoles: ['administrator'],
+  })
   @response(200, {
     description: 'ReviewStatus model instance',
     content: {
