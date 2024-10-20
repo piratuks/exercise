@@ -1,0 +1,99 @@
+.input-container label {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.input-container input {
+  width: 100%;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  min-height: 38px;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 100ms;
+  transition: all 100ms;
+  background-color: hsl(0, 0%, 100%);
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  font-family: -apple-system, 'system-ui', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  font-feature-settings: normal;
+  font-kerning: auto;
+  font-optical-sizing: auto;
+  font-size: 16px;
+  font-weight: 600;
+}
+.input-container {
+  display: flex;
+  flex-direction: column;
+}
+.input-with-suffix {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(204, 204, 204);
+}
+.input-with-suffix input {
+  flex: 1;
+  padding-right: 5px;
+}
+.currency-suffix {
+  margin-left: 5px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.loading {
+  width: 100%;
+  display: flex;
+}
+.loading .line {
+  border-radius: 5px;
+  background: rgba(130, 130, 130, 0.2);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    color-stop(8%, rgba(130, 130, 130, 0.2)),
+    color-stop(18%, rgba(130, 130, 130, 0.3)),
+    color-stop(33%, rgba(130, 130, 130, 0.2))
+  );
+  background: linear-gradient(
+    to right,
+    rgba(130, 130, 130, 0.2) 8%,
+    rgba(130, 130, 130, 0.3) 18%,
+    rgba(130, 130, 130, 0.2) 33%
+  );
+  animation: wave-lines 2s infinite ease-out;
+}
+.loadings {
+  flex: 2;
+}
+.hw1 {
+  height: 38px;
+  width: 100%;
+}
+@keyframes wave-lines {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}

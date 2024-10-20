@@ -1,0 +1,4 @@
+{
+  "environment": "development",
+  "apiEndpoint": "https://my.transfergo.com/api"
+}

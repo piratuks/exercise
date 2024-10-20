@@ -1,0 +1,11 @@
+.currency-flag {
+  vertical-align: middle;
+}
+.currency-key {
+  margin-left: 8px;
+}
+.dropdown-container label {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.4);
+}

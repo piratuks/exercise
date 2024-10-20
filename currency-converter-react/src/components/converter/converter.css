@@ -1,0 +1,87 @@
+.container-parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.container-fluid {
+  padding: 40px;
+  width: 440px;
+  height: 270px;
+  background-color: white;
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  gap: 20px;
+}
+.dropdownBlock {
+  width: 200px;
+}
+.spacer {
+  flex-grow: 1;
+}
+.switch {
+  cursor: pointer;
+  color: rgb(75, 148, 244);
+}
+.inputBlockFullW {
+  width: 100%;
+}
+.inputBlock {
+  width: 200px;
+}
+.btn {
+  width: 100%;
+  padding: 20px;
+  color: white;
+  background-color: #17b169;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: #118750;
+  }
+}
+.info {
+}
+.info ul {
+  padding-bottom: 20px;
+}
+.info ul li {
+  font-weight: 600;
+}
+.info p {
+  font-size: 11px;
+  line-height: 10px;
+  line-height: 15px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.info ul.custom-list {
+  list-style-type: none;
+}
+.info ul.custom-list li {
+  position: relative;
+  padding-left: 20px;
+}
+.info ul.custom-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  background-color: white;
+  border: 4px solid #f0e68c;
+  border-radius: 50%;
+}
