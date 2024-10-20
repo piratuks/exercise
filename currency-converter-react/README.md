@@ -1,4 +1,4 @@
-# Portfolio
+# Currency converter
 
 | \*  | Version   | Supported          |
 | --- | --------- | ------------------ |
