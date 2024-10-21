@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useRef } from 'react';
+import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 
 import { CurrencyKey } from 'app/currency';
 import { formatNumber } from 'utils/functionUtils';
@@ -27,6 +27,8 @@ export const Input: FC<InputProps> = ({
   isFocused = false
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [inputValue, setInputValue] = useState<string>(formatNumber(selectedAmount));
+  const isPropUpdateRef = useRef(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -35,13 +37,32 @@ export const Input: FC<InputProps> = ({
 
     if (value) {
       if (regex.test(value) || value === '') {
-        const floatValue = parseFloat(value);
+        setInputValue(value);
+        isPropUpdateRef.current = false;
+      }
+    }
+  };
+
+  useEffect(() => {
+    setInputValue(formatNumber(selectedAmount));
+    isPropUpdateRef.current = true;
+  }, [selectedAmount]);
+
+  useEffect(() => {
+    if (isPropUpdateRef.current) {
+      return;
+    }
+
+    const debounceTimer = setTimeout(() => {
+      if (inputValue) {
+        const floatValue = parseFloat(inputValue);
         if (!isNaN(floatValue)) {
           handleChange(floatValue);
         }
       }
-    }
-  };
+    }, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [inputValue, handleChange]);
 
   useEffect(() => {
     if (!isLoading && isFocused && inputRef.current) {
@@ -67,7 +88,7 @@ export const Input: FC<InputProps> = ({
             ref={inputRef}
             onFocus={handleFocus}
             placeholder={placeholder}
-            value={formatNumber(selectedAmount)}
+            value={inputValue}
             pattern="^\d*\.?\d{0,2}$"
             type="number"
             step="0.01"
