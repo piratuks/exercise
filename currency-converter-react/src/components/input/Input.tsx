@@ -29,6 +29,7 @@ export const Input: FC<InputProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
   const isPropUpdateRef = useRef(false);
+  const isDebounced = useRef(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -39,6 +40,7 @@ export const Input: FC<InputProps> = ({
       if (regex.test(value) || value === '') {
         setInputValue(value);
         isPropUpdateRef.current = false;
+        isDebounced.current = false;
       }
     }
   };
@@ -56,10 +58,12 @@ export const Input: FC<InputProps> = ({
     }
 
     const debounceTimer = setTimeout(() => {
-      if (inputValue) {
+      if (inputValue && !isDebounced.current) {
         const floatValue = parseFloat(inputValue);
         if (!isNaN(floatValue)) {
           handleChange(floatValue);
+          setInputValue(formatNumber(floatValue));
+          isDebounced.current = true;
         }
       }
     }, 500);

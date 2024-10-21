@@ -51,7 +51,11 @@ export const useConverter = (
     const validatedData = validateLimit(amount, currency);
     if (validatedData.hint) {
       setActiveInput('from');
-      setAmount(validatedData.amount);
+      if (btnClicked) setAmount(validatedData.amount);
+      else {
+        setFromAmount(validatedData.amount);
+        setAmount(validatedData.amount);
+      }
       return true;
     }
     return false;
