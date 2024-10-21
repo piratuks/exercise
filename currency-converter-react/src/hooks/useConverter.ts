@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react';
 export const useConverter = (
   handleConvertCallBack: (from: CurrencyKey, to: CurrencyKey, amount: number) => void,
   fromAmount: number | null,
-  toAmount: number | null,
-  convertInitiated: boolean
+  toAmount: number | null
 ) => {
   const [from, setFrom] = useState<Currency>(defaultFrom);
   const [to, setTo] = useState<Currency>(defaultTo);
@@ -14,6 +13,7 @@ export const useConverter = (
   const [amountF, setFromAmount] = useState<number | null>(defaultAmount);
   const [amountT, setToAmount] = useState<number | null>(null);
   const [activeInput, setActiveInput] = useState<'from' | 'to'>('from');
+  const [btnClicked, setBtnclicked] = useState<boolean>(false);
 
   useEffect(() => {
     if (activeInput === 'from' && fromAmount !== null) {
@@ -24,12 +24,12 @@ export const useConverter = (
   }, [fromAmount, toAmount, activeInput]);
 
   useEffect(() => {
-    handleConvert();
-  }, [from, to]);
+    if (btnClicked) handleConvert();
+  }, [from, to, btnClicked]);
 
   useEffect(() => {
-    handleConvert();
-  }, [amount, from, to, activeInput]);
+    if (btnClicked) handleConvert();
+  }, [amount, from, to, activeInput, btnClicked]);
 
   const updateAmounts = (amountValue: number | null, currency: Currency, otherAmount: number | null) => {
     const processed = processedValidationConvert(amountValue, currency);
@@ -86,6 +86,7 @@ export const useConverter = (
 
   const handleConvertClick = () => {
     setAmount(amountF);
+    setBtnclicked(true);
   };
 
   const handleCurrencyChange = (data: Currency, type: 'from' | 'to') => {
@@ -109,7 +110,7 @@ export const useConverter = (
     setFrom(to);
     setTo(tempKey);
 
-    if (convertInitiated) {
+    if (btnClicked) {
       const tempVal = amountF;
       updateAmounts(amountT, to, tempVal);
     }

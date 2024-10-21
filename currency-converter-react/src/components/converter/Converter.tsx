@@ -34,7 +34,7 @@ export const Converter: FC<Props> = ({
     handleConvertClick,
     handleFromAmountChange,
     handleToAmountChange
-  } = useConverter(handleConvertCallBack, fromAmount, toAmount, convertInitiated);
+  } = useConverter(handleConvertCallBack, fromAmount, toAmount);
   const [focusedInput, setFocusedInput] = useState<'from' | 'to' | null>(null);
 
   const handleFocusFromAmount = () => {
