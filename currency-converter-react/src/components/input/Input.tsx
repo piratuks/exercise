@@ -27,7 +27,7 @@ export const Input: FC<InputProps> = ({
   isFocused = false
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [inputValue, setInputValue] = useState<string>(formatNumber(selectedAmount));
+  const [inputValue, setInputValue] = useState<string>('');
   const isPropUpdateRef = useRef(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,9 +44,11 @@ export const Input: FC<InputProps> = ({
   };
 
   useEffect(() => {
-    setInputValue(formatNumber(selectedAmount));
-    isPropUpdateRef.current = true;
-  }, [selectedAmount]);
+    if (!isLoading) {
+      setInputValue(formatNumber(selectedAmount));
+      isPropUpdateRef.current = true;
+    }
+  }, [selectedAmount, isLoading]);
 
   useEffect(() => {
     if (isPropUpdateRef.current) {

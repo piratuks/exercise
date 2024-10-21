@@ -38,6 +38,7 @@ export const HomePage: FC = () => {
   const handleConvert = (from: CurrencyKey, to: CurrencyKey, amount: number) => {
     setConversionParams({ from, to, amount });
     setConvertInitiated(true);
+    setSkip(true);
   };
 
   const handleErrorInternal = (error: FetchBaseQueryError | SerializedError) => {
