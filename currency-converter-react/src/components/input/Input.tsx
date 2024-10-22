@@ -61,8 +61,9 @@ export const Input: FC<InputProps> = ({
       if (inputValue && !isDebounced.current) {
         const floatValue = parseFloat(inputValue);
         if (!isNaN(floatValue)) {
-          handleChange(floatValue);
-          setInputValue(formatNumber(floatValue));
+          const validatedAmount = max && floatValue > max ? max : floatValue;
+          handleChange(validatedAmount);
+          setInputValue(formatNumber(validatedAmount));
           isDebounced.current = true;
         }
       }
