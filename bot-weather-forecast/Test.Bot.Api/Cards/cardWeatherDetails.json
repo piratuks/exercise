@@ -1,0 +1,81 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "medium",
+        "weight": "bolder",
+        "text": "{{date}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Temperature: {{temperature}}°{{temperatureSymbol}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Feels Like: {{temperatureFeelsLike}}°{{temperatureSymbol}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Lowest Temperature: {{lowestTemperature}}°{{temperatureSymbol}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Highest Temperature: {{highestTemperature}}°{{temperatureSymbol}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Humidity: {{humidity}}%",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Wind Speed: {{windSpeed}} {{windSymbol}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "small",
+        "text": "Description: {{description}}",
+        "wrap": true,
+        "maxLines": 0,
+        "isSubtle": true
+      }
+    ]
+}
+  

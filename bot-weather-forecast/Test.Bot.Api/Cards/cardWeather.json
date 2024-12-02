@@ -1,0 +1,25 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "large",
+        "weight": "bolder",
+        "text": "Weather in {{cardTitle}}",
+        "wrap": true,
+        "maxLines": 0
+      },
+      {
+        "type": "TextBlock",
+        "spacing": "medium",
+        "size": "medium",
+        "text": "{{cardDesc}}",
+        "wrap": true,
+        "maxLines": 0
+      }
+    ]
+}
+  
